@@ -23,15 +23,25 @@ Now install required packages for the project:
 
 $ pip install -r Icarus/pip_requirements.txt
 
+Development webserver
+---------------------
+
+To startup the *not for production* web server, inside your virtualenv, go to the vIcarus/Icarus/IcarusWeb directory and then command:
+
+$ python manage.py runserver
+
+This should start a web server listening on localhost, port 8000. To check it worked, simply browse (in the same machine!) the address (http://localhost:8000).
+
 Coding style
 ------------
 
 Snake case throughout, except on class names, and since file names should track closely class names, file names should also have first letter uppercase. Example:
 
 $ head Log.py
-
+```
 # -*- coding: utf-8 -*-
 
 class Log ( object ):
   def look_what_a_cool_and_descriptive_function_name ( wow_you_type_really_long_parameter_names ):
     you_are_insane_to_use_long_descriptive_variable_names_on_local_scope = "ALL names should be humanly readable, no exceptions."
+```
