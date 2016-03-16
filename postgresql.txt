@@ -1,0 +1,4 @@
+createuser -Pd icarus_user
+createdb icarus_database
+psql
+grant all privileges on database icarus_database to icarus_user;
