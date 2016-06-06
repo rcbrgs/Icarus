@@ -1,0 +1,10 @@
+# Packages neede to be installed on Amazon AMI:
+packages="
+gcc
+git
+postgresql
+postgresql-devel
+python34
+python34-virtualenv
+"
+sudo yum install $packages
