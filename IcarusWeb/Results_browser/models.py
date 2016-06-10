@@ -3,13 +3,11 @@ from django.db import models
 # Create your models here.
 
 class Algorithm ( models.Model ):
-    
     # Must be before Result.
     name = models.CharField ( max_length = 255 )
     version_git_commit = models.CharField ( max_length = 255 )
 
 class Classification ( models.Model ):
-
     # Must be interpreted before Result.
     genus = models.CharField ( max_length = 255 )
     subgenus = models.CharField ( max_length = 255 )
@@ -18,30 +16,34 @@ class Classification ( models.Model ):
     family = models.CharField ( max_length = 255 )
     subfamily = models.CharField ( max_length = 255 )
 
-#class Sample_image_wing ( models.Model ):
+class Image ( models.Model ):
+    image_height = models.IntegerField ( )
+    image_width = models.IntegerField ( )
     
-class Sample_input ( models.Model ):
+class Sample_image_wing ( models.Model ):
+    # must be before Sample_input
+    image_id = models.ForeignKey ( Image, null = True, blank = False )
+    #sample_wing_id = models.ForeignKey ( Sample_wing, null = True, blank = False )
+    #landmarks_id = models.ForeignKey ( Landmarks, null = True, blank = True )
+    #file_id = models.ForeignKey ( File, null = True, blank = False )
 
+class Sample_input ( models.Model ):
     # Must be before Result.
     sample_type = models.CharField ( max_length = 255 )
-    #sample_image_wing_id = models.ForeignKey ( Sample_image_wing, null = True, blank = True )
+    sample_image_wing_id = models.ForeignKey ( Sample_image_wing, null = True, blank = True )
     #sample_sound_wingbeat_id = models.ForeignKey ( Sample_sound_wingbeat, null = True, blank = True )
     
 class Result ( models.Model ):
-
     # Must be interpreted after Classification.
     sample_input_id = models.ForeignKey ( Sample_input )
     algorithm_id = models.ForeignKey ( Algorithm )
     classification_id = models.ForeignKey ( Classification )
 
-#class Sample ( models.Model ):
-#    butantan_registry
-#    LECZ_registry
-#    date
-#    origin
-#    specimen_stage
-#    is_female_compatible
-#    is_male_compatible
+class Sample ( models.Model ):
+    butantan_registry = models.CharField ( max_length = 255 )
+    is_female_compatible = models.BooleanField ( )
+    is_male_compatible = models.BooleanField ( )
+    LECZ_registry = models.CharField ( max_length = 255 )
 #    #notes_file_id = models.ForeignKey (  )
 #    #collector_user_id = models.ForeignKey (  )
 #    #donation_id = models.ForeignKey (  )
@@ -51,3 +53,4 @@ class Result ( models.Model ):
 #    #phytophysiognomy_id = models.ForeignKey (  )
 #    #collect_id = models.ForeignKey (  )
 #    #storage_id = models.ForeignKey (  )
+
