@@ -25,6 +25,9 @@ class ACL ( models.Model ):
     write_permission = models.BooleanField ( )
     users_list = models.ManyToManyField ( User )
 
+class Area_type ( models.Model ):
+    name = models.CharField ( max_length = 255 )
+    
 class Algorithm ( models.Model ):
     # Must be before Result.
     name = models.CharField ( max_length = 255 )
@@ -39,6 +42,50 @@ class Classification ( models.Model ):
     family = models.CharField ( max_length = 255 )
     subfamily = models.CharField ( max_length = 255 )
 
+class Collection_type ( models.Model ):
+    specimen_stage = models.CharField ( max_length = 255 )
+    method = models.CharField ( max_length = 255 )
+
+class Climate_information ( models.Model ):
+    temperature = models.FloatField ( )
+    wind = models.FloatField ( )
+    air_relative_humidity = models.FloatField ( )
+    pluviosity = models.FloatField ( )
+    date = models.DateField ( )
+    time = models.DateTimeField ( )
+    
+class Political_location ( models.Model ):
+    country = models.CharField ( max_length = 255 )
+    state = models.CharField ( max_length = 255 )
+    city = models.CharField ( max_length = 255 )
+    
+class Location ( models.Model ):
+    name = models.CharField ( max_length = 255 )
+    latitude = models.FloatField ( )
+    longitude = models.FloatField ( )
+    datum = models.CharField ( max_length = 255 )
+    altitude = models.FloatField ( )
+    political_location_id = models.ForeignKey ( Political_location )
+    area_type_id = models.ForeignKey ( Area_type )
+    
+class Publication ( models.Model ):
+    journal_name = models.CharField ( max_length = 255 )
+    journal_page_number = models.IntegerField ( )
+    journal_volume = models.CharField ( max_length = 255 )
+    journal_title = models.CharField ( max_length = 255 )
+    url = models.CharField ( max_length = 255 )
+    author_name = models.CharField ( max_length = 255 )
+    year = models.DateField ( )
+    doi = models.CharField ( max_length = 255 )
+    
+class Collect ( models.Model ):
+    date = models.DateField ( )
+    location_id = models.ForeignKey ( Location )
+    code = models.CharField ( max_length = 255 )
+    climate_information_id = models.ForeignKey ( Climate_information )
+    collection_type_id = models.ForeignKey ( Collection_type )
+    publication_id = models.ForeignKey ( Publication )
+    
 class Donation ( models.Model ):
     date = models.DateField ( )
     number_of_structures = models.IntegerField ( )
@@ -49,6 +96,11 @@ class File ( models.Model ):
     host = models.CharField ( max_length = 255 )
     path = models.CharField ( max_length = 255 )
     ACL_id = models.ForeignKey ( ACL )
+
+class Gene_bank_registry ( models.Model ):
+    identifier = models.CharField ( max_length = 255 )
+    url = models.CharField ( max_length = 255 )
+    name = models.CharField ( max_length = 255 )
     
 class Image ( models.Model ):
     image_height = models.IntegerField ( )
@@ -69,26 +121,30 @@ class Landmarks ( models.Model ):
 class Manual_classification ( models.Model ):
     user_id = models.ForeignKey ( User )
     classification_id = models.ForeignKey ( Classification )
-    
+
+class MosquitoLab ( models.Model ):
+    page_number = models.IntegerField ( )
+    book_code = models.CharField ( max_length = 255 )
+    code = models.CharField ( max_length = 255 )
+
+class Photophysiognomy ( models.Model ):
+    name = models.CharField ( max_length = 255 )
+    description = models.CharField ( max_length = 255 )
+
 class Sample_image_wing ( models.Model ):
     # must be before Sample_input
     image_id = models.ForeignKey ( Image, null = True, blank = False )
     #sample_wing_id = models.ForeignKey ( Sample_wing, null = True, blank = False )
     landmarks_id = models.ForeignKey ( Landmarks, null = True, blank = True )
-    #file_id = models.ForeignKey ( File, null = True, blank = False )
+    file_id = models.ForeignKey ( File, null = True, blank = False )
 
-class Sample_input ( models.Model ):
-    # Must be before Result.
-    sample_type = models.CharField ( max_length = 255 )
-    sample_image_wing_id = models.ForeignKey ( Sample_image_wing, null = True, blank = True )
-    #sample_sound_wingbeat_id = models.ForeignKey ( Sample_sound_wingbeat, null = True, blank = True )
+class Storage ( models.Model ):
+    date_start = models.DateField ( )
+    date_end = models.DateField ( )
+    inventory_code = models.CharField ( max_length = 255 )
+    storage_location_id = models.ForeignKey ( Location )
+    storage_medium = models.CharField ( max_length = 255 )
     
-class Result ( models.Model ):
-    # Must be interpreted after Classification.
-    sample_input_id = models.ForeignKey ( Sample_input )
-    algorithm_id = models.ForeignKey ( Algorithm )
-    classification_id = models.ForeignKey ( Classification )
-
 class Sample ( models.Model ):
     butantan_registry = models.CharField ( max_length = 255 )
     is_female_compatible = models.BooleanField ( )
@@ -98,9 +154,43 @@ class Sample ( models.Model ):
     collector_user_id = models.ForeignKey ( User )
     donation_id = models.ForeignKey ( Donation )
     manual_classification_id = models.ForeignKey ( Manual_classification )
-#    #mosquitolab_id = models.ForeignKey (  )
-#    #gene_bank_registry_id = models.ForeignKey (  )
-#    #phytophysiognomy_id = models.ForeignKey (  )
-#    #collect_id = models.ForeignKey (  )
-#    #storage_id = models.ForeignKey (  )
+    mosquitolab_id = models.ForeignKey ( MosquitoLab, null = True )
+    gene_bank_registry_id = models.ForeignKey ( Gene_bank_registry, null = True )
+    phytophysiognomy_id = models.ForeignKey ( Photophysiognomy, null = True )
+    collect_id = models.ForeignKey ( Collect, null = True )
+    storage_id = models.ForeignKey ( Storage, null = True )
 
+class Sample_group ( models.Model ):
+    creation_date = models.DateField ( )
+    classification_id = models.ForeignKey ( Classification )
+    sample_id = models.ForeignKey ( Sample )
+
+class Sound ( models.Model ):
+    sampling_rate = models.FloatField ( )
+    encoding = models.CharField ( max_length = 255 )
+    
+class Sample_sound_wingbeat ( models.Model ):
+    file_id = models.ForeignKey ( File )
+    sample_id = models.ForeignKey ( Sample )
+    sound_id = models.ForeignKey ( Sound )
+
+class Sample_input ( models.Model ):
+    # Must be before Result.
+    sample_type = models.CharField ( max_length = 255 )
+    sample_image_wing_id = models.ForeignKey ( Sample_image_wing, null = True, blank = True )
+    sample_sound_wingbeat_id = models.ForeignKey ( Sample_sound_wingbeat, null = True, blank = True )
+
+class Result ( models.Model ):
+    # Must be interpreted after Classification.
+    sample_input_id = models.ForeignKey ( Sample_input )
+    algorithm_id = models.ForeignKey ( Algorithm )
+    classification_id = models.ForeignKey ( Classification )
+    
+class Sample_wing ( models.Model ):
+    sample_id = models.ForeignKey ( Sample )
+    is_left_compatible = models.BooleanField ( )
+    is_right_compatible = models.BooleanField ( )
+    is_internal_compatible = models.BooleanField ( )
+    is_external_compatible = models.BooleanField ( )
+    number_of_laminae = models.IntegerField ( )
+    
