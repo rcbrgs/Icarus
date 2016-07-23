@@ -35,15 +35,15 @@ class Algorithm ( models.Model ):
 
 class Classification ( models.Model ):
     # Must be interpreted before Result.
-    genus = models.CharField ( max_length = 255 )
-    subgenus = models.CharField ( max_length = 255 )
-    species = models.CharField ( max_length = 255 )
-    subspecies = models.CharField ( max_length = 255 )
-    family = models.CharField ( max_length = 255 )
-    subfamily = models.CharField ( max_length = 255 )
+    genus = models.CharField ( max_length = 30 )
+    subgenus = models.CharField ( max_length = 30 )
+    species = models.CharField ( max_length = 30 )
+    subspecies = models.CharField ( max_length = 30 )
+    family = models.CharField ( max_length = 30 )
+    subfamily = models.CharField ( max_length = 30 )
 
 class Collection_type ( models.Model ):
-    specimen_stage = models.CharField ( max_length = 255 )
+    specimen_stage = models.CharField ( max_length = 25 )
     method = models.CharField ( max_length = 255 )
 
 class Climate_information ( models.Model ):
@@ -55,15 +55,15 @@ class Climate_information ( models.Model ):
     time = models.DateTimeField ( )
     
 class Political_location ( models.Model ):
-    country = models.CharField ( max_length = 255 )
-    state = models.CharField ( max_length = 255 )
-    city = models.CharField ( max_length = 255 )
+    country = models.CharField ( max_length = 100 )
+    state = models.CharField ( max_length = 100 )
+    city = models.CharField ( max_length = 100 )
     
 class Location ( models.Model ):
     name = models.CharField ( max_length = 255 )
     latitude = models.FloatField ( )
     longitude = models.FloatField ( )
-    datum = models.CharField ( max_length = 255 )
+    datum = models.CharField ( max_length = 100 )
     altitude = models.FloatField ( )
     political_location_id = models.ForeignKey ( Political_location )
     area_type_id = models.ForeignKey ( Area_type )
@@ -71,10 +71,10 @@ class Location ( models.Model ):
 class Publication ( models.Model ):
     journal_name = models.CharField ( max_length = 255 )
     journal_page_number = models.IntegerField ( )
-    journal_volume = models.CharField ( max_length = 255 )
-    journal_title = models.CharField ( max_length = 255 )
+    journal_volume = models.CharField ( max_length = 10 )
+    article_title = models.CharField ( max_length = 255 )
     url = models.CharField ( max_length = 255 )
-    author_name = models.CharField ( max_length = 255 )
+    author_name = models.CharField ( max_length = 100 )
     year = models.DateField ( )
     doi = models.CharField ( max_length = 255 )
     
@@ -98,9 +98,9 @@ class File ( models.Model ):
     ACL_id = models.ForeignKey ( ACL )
 
 class Gene_bank_registry ( models.Model ):
-    identifier = models.CharField ( max_length = 255 )
+    identifier = models.CharField ( max_length = 100 )
     url = models.CharField ( max_length = 255 )
-    name = models.CharField ( max_length = 255 )
+    name = models.CharField ( max_length = 50 )
     
 class Image ( models.Model ):
     image_height = models.IntegerField ( )
@@ -124,11 +124,11 @@ class Manual_classification ( models.Model ):
 
 class MosquitoLab ( models.Model ):
     page_number = models.IntegerField ( )
-    book_code = models.CharField ( max_length = 255 )
+    book_code = models.CharField ( max_length = 3 )
     code = models.CharField ( max_length = 255 )
 
 class Photophysiognomy ( models.Model ):
-    name = models.CharField ( max_length = 255 )
+    name = models.CharField ( max_length = 100 )
     description = models.CharField ( max_length = 255 )
 
 class Sample_image_wing ( models.Model ):
@@ -141,15 +141,15 @@ class Sample_image_wing ( models.Model ):
 class Storage ( models.Model ):
     date_start = models.DateField ( )
     date_end = models.DateField ( )
-    inventory_code = models.CharField ( max_length = 255 )
+    inventory_code = models.CharField ( max_length = 255, null = True )
     storage_location_id = models.ForeignKey ( Location )
-    storage_medium = models.CharField ( max_length = 255 )
+    storage_medium = models.CharField ( max_length = 100 )
     
 class Sample ( models.Model ):
-    butantan_registry = models.CharField ( max_length = 255 )
+    butantan_registry = models.CharField ( max_length = 20 )
     is_female_compatible = models.BooleanField ( )
     is_male_compatible = models.BooleanField ( )
-    LECZ_registry = models.CharField ( max_length = 255 )
+    LECZ_registry = models.CharField ( max_length = 20 )
     #notes_file_id = models.ForeignKey (  )
     collector_user_id = models.ForeignKey ( User )
     donation_id = models.ForeignKey ( Donation )
@@ -161,7 +161,6 @@ class Sample ( models.Model ):
     storage_id = models.ForeignKey ( Storage, null = True )
 
 class Sample_group ( models.Model ):
-    creation_date = models.DateField ( )
     classification_id = models.ForeignKey ( Classification )
     sample_id = models.ForeignKey ( Sample )
 
@@ -192,5 +191,4 @@ class Sample_wing ( models.Model ):
     is_right_compatible = models.BooleanField ( )
     is_internal_compatible = models.BooleanField ( )
     is_external_compatible = models.BooleanField ( )
-    number_of_laminae = models.IntegerField ( )
     
