@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url ( r"^admin/", admin.site.urls ),
     url ( r"^db/", include ( "Results_browser.urls" ) ),
+    url ( r"^execute/", include ( "execute.urls" ) ),
 ]

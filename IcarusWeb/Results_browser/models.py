@@ -153,7 +153,7 @@ class Sample ( models.Model ):
     #notes_file_id = models.ForeignKey (  )
     collector_user_id = models.ForeignKey ( User )
     donation_id = models.ForeignKey ( Donation )
-    manual_classification_id = models.ForeignKey ( Manual_classification )
+    manual_classification_id = models.ForeignKey ( Manual_classification, null = True )
     mosquitolab_id = models.ForeignKey ( MosquitoLab, null = True )
     gene_bank_registry_id = models.ForeignKey ( Gene_bank_registry, null = True )
     phytophysiognomy_id = models.ForeignKey ( Photophysiognomy, null = True )

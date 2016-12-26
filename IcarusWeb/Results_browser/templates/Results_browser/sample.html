@@ -1,0 +1,16 @@
+<h3>Sample</h3>
+<ul>
+  <li>Butantan registry: {{ sample.butantan_registry }}</li>
+  <li>Is female compatible: {{ sample.is_female_compatible }}</li>
+  <li>Is male compatible: {{ sample.is_male_compatible }}</li>
+  <li>LECZ registry: {{ sample.LECZ_registry }}</li>
+  <li><a href="db/collector/{{ sample.collector_user_id.id }}">Collector user</a></li>
+  <li><a href="db/donation/{{ sample.donation_id.id }}">Donation</a></li>
+  <li><a href="db/manual_classification/{{ sample.manual_classification_id.id }}">Manual classification</a></li>
+  <li><a href="db/mosquito_lab/{{ sample.mosquitolab_id.id }}">Mosquito Lab</a></li>
+  <li><a href="db/gene_bank_id/{{ sample.gene_bank_registry_id.id }}">Gene Bank</a></li>
+  <li><a href="db/photophysiognomy/{{ sample.phytophysiognomy_id.id }}">Phytophysiognomy</a></li>
+  <li><a href="db/collect/{{ sample.collect_id.id }}">Collect</a></li>
+  <li><a href="db/storage/{{ sample.storage_id.id }}">Storage</a></li>
+</ul>
+<a href="/execute/{{sample.id }}">Execute</a>
