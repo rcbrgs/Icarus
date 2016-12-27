@@ -57,7 +57,7 @@ ROOT_URLCONF = 'IcarusWeb.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['IcarusWeb/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
