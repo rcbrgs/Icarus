@@ -1,7 +1,16 @@
 from django.http import Http404, HttpResponse
-from django.shortcuts import render
+import django
 import importlib
 from .models import Algorithm, Classification, Result, Sample, Sample_input, Sample_image_wing
+
+# auxiliary methods
+
+def get_sensible_name_from_url ( url ):
+    return url [ 0 ].upper ( ) + url [ 1: ].lower ( )    
+
+def get_table_from_table_name ( table_name ): 
+    module = importlib.import_module ( "Results_browser.models" )
+    return getattr ( module, table_name )
 
 # Create your views here.
 
@@ -12,23 +21,12 @@ def algorithm ( request, algorithm_id ):
         raise Http404 ( "Algorithm does not exist." )
     return render ( request, "Results_browser/algorithm.html", { "algorithm": algorithm_row } )
 
-def get_sensible_name_from_url ( url ):
-    return url [ 0 ].upper ( ) + url [ 1: ].lower ( )    
-
-def get_table_from_table_name ( table_name ): 
-    module = importlib.import_module ( "Results_browser.models" )
-    return getattr ( module, table_name )
-
 def record_view ( request, table_name, record_id ):
     sensible_name = get_sensible_name_from_url ( table_name )
-    print ( sensible_name )
     table_module = get_table_from_table_name ( sensible_name )
-    print ( record_id )
-    try:
-        record = table_module.objects.get ( record_id )
-    except table_module.DoesNotExist:
-        raise Http404 ( "Record {} does not exist in table {}.".format ( record_id, sensible_name ) )
-    return render ( request, "Results_browser/record_view.html", { "record": record, "table_name": sensible_name } )    
+    record = django.shortcuts.get_object_or_404 ( table_module, pk = record_id )
+    record_values = table_module.objects.values ( id == record_id )
+    return django.shortcuts.render ( request, "Results_browser/record_view.html", { "record": record, "table_name": sensible_name} )    
 
 def table_index ( request, table_name ):
     sensible_name = get_sensible_name_from_url ( table_name )
