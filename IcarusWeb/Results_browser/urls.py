@@ -1,9 +1,12 @@
 from django.conf.urls import url
 
+from . import models
 from . import views
 
 urlpatterns = [
     url ( r"^$", views.index, name = "index" ),
+    url ( r"^(?P<table_name>[\w]+)/*$", views.table_index, name = "table_index" ),
+    url ( r"^(?P<table_name>[\w]+)/(?P<record_id>[0-9]+)/*$", views.record_view, name = "record_view" ),
     url ( r"^algorithm/(?P<algorithm_id>[0-9]+)/$", views.algorithm, name = "algorithm" ),
     url ( r"^classification/(?P<classification_id>[0-9]+)/$", views.classification, name = "classification" ),
     url ( r"^result/(?P<result_id>[0-9]+)/$", views.result, name = "result" ),

@@ -1,0 +1,7 @@
+<h3>{{ table_name }} records</h3>
+<ul>
+  {% for row in table %}
+  <li><a href="/db/{{ table_name }}/{{ row.id }}">{{ row.id }}</a></li>
+  {% endfor %}
+</ul>
+
