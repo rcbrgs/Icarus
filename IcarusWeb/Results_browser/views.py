@@ -25,15 +25,24 @@ def record_view ( request, table_name, record_id ):
     sensible_name = get_sensible_name_from_url ( table_name )
     table_module = get_table_from_table_name ( sensible_name )
     record = django.shortcuts.get_object_or_404 ( table_module, pk = record_id )
-    record_values = table_module.objects.values ( id == record_id )
-    return django.shortcuts.render ( request, "Results_browser/record_view.html", { "record": record, "table_name": sensible_name} )    
+    #record_values = [ field for field in record._meta.get_fields ( ) ]
+    #record_values = django.forms.models.model_to_dict ( record )
+    record_values = { }
+    for field in table_module._meta.fields:
+        #if field in table_module._meta.many_to_many:
+        #    continue
+        #if field in table_module._meta.
+        #if field in table_module._meta.one_to_one:
+        #    continue
+        record_values [ field.name ] = getattr ( record, field.name )
+    return django.shortcuts.render ( request, "Results_browser/record_view.html", { "record": record, "table_name": sensible_name, "record_values": record_values } )    
 
 def table_index ( request, table_name ):
     sensible_name = get_sensible_name_from_url ( table_name )
     table_module = get_table_from_table_name ( sensible_name )
     table = table_module.objects.all ( )
     print ( "table = {}".format ( table ) )
-    return render ( request, "Results_browser/table_index.html", { "table": table, "table_name": sensible_name } )
+    return django.shortcuts.render ( request, "Results_browser/table_index.html", { "table": table, "table_name": sensible_name } )
 
 def classification ( request, classification_id ):
     try:
@@ -43,7 +52,7 @@ def classification ( request, classification_id ):
     return render ( request, "Results_browser/classification.html", { "classification": classification_row } )
 
 def index ( request ):
-    return render ( request, "Results_browser/index.html", { } )
+    return django.shortcuts.render ( request, "Results_browser/index.html", { } )
 
 def result ( request, result_id ):
     try:

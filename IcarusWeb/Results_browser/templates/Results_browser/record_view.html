@@ -1,3 +1,7 @@
 <h3>{{ table_name }} record {{ record.id }}</h3>
 <ul>
+  <p>{{ record_values }}</p>
+  {% for key, value in record_values.items %}
+  <li>{{ table_name }}.{{ key }} = {{ value }}</li>
+  {% endfor %}
 </ul>
