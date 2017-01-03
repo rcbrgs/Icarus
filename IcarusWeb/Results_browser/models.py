@@ -89,8 +89,8 @@ class Collect ( models.Model ):
 class Donation ( models.Model ):
     date = models.DateField ( )
     number_of_structures = models.IntegerField ( )
-    donating_institution_id = models.ForeignKey ( Institution )
-    donor_user_id = models.ForeignKey ( User )
+    institution_id = models.ForeignKey ( Institution )
+    user_id = models.ForeignKey ( User )
     
 class File ( models.Model ):
     host = models.CharField ( max_length = 255 )
@@ -122,12 +122,12 @@ class Manual_classification ( models.Model ):
     user_id = models.ForeignKey ( User )
     classification_id = models.ForeignKey ( Classification )
 
-class MosquitoLab ( models.Model ):
+class Mosquitolab ( models.Model ):
     page_number = models.IntegerField ( )
     book_code = models.CharField ( max_length = 3 )
     code = models.CharField ( max_length = 255 )
 
-class Photophysiognomy ( models.Model ):
+class Phytophysiognomy ( models.Model ):
     name = models.CharField ( max_length = 100 )
     description = models.CharField ( max_length = 255 )
 
@@ -142,7 +142,7 @@ class Storage ( models.Model ):
     date_start = models.DateField ( )
     date_end = models.DateField ( )
     inventory_code = models.CharField ( max_length = 255, null = True )
-    storage_location_id = models.ForeignKey ( Location )
+    location_id = models.ForeignKey ( Location )
     storage_medium = models.CharField ( max_length = 100 )
     
 class Sample ( models.Model ):
@@ -151,12 +151,12 @@ class Sample ( models.Model ):
     is_male_compatible = models.BooleanField ( )
     LECZ_registry = models.CharField ( max_length = 20 )
     #notes_file_id = models.ForeignKey (  )
-    collector_user_id = models.ForeignKey ( User )
+    user_id = models.ForeignKey ( User )
     donation_id = models.ForeignKey ( Donation )
     manual_classification_id = models.ForeignKey ( Manual_classification, null = True )
-    mosquitolab_id = models.ForeignKey ( MosquitoLab, null = True )
+    mosquitolab_id = models.ForeignKey ( Mosquitolab, null = True )
     gene_bank_registry_id = models.ForeignKey ( Gene_bank_registry, null = True )
-    phytophysiognomy_id = models.ForeignKey ( Photophysiognomy, null = True )
+    phytophysiognomy_id = models.ForeignKey ( Phytophysiognomy, null = True )
     collect_id = models.ForeignKey ( Collect, null = True )
     storage_id = models.ForeignKey ( Storage, null = True )
 

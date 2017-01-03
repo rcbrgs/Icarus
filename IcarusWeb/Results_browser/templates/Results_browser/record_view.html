@@ -1,7 +1,11 @@
 <h3>{{ table_name }} record {{ record.id }}</h3>
 <ul>
-  <p>{{ record_values }}</p>
   {% for key, value in record_values.items %}
+  {% if key != "id" %}
   <li>{{ table_name }}.{{ key }} = {{ value }}</li>
+  {% endif %}
+  {% endfor %}
+  {% for key, value in record_relatives.items %}
+  <li>{{ table_name }}.{{ key }} = <a href="/db/{{ key}}/{{ value }}">{{ key }} record {{ value }}</a></li>
   {% endfor %}
 </ul>

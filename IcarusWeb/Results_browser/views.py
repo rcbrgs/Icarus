@@ -1,5 +1,6 @@
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 import django
+from .forms import SampleForm
 import importlib
 from .models import Algorithm, Classification, Result, Sample, Sample_input, Sample_image_wing
 
@@ -12,30 +13,27 @@ def get_table_from_table_name ( table_name ):
     module = importlib.import_module ( "Results_browser.models" )
     return getattr ( module, table_name )
 
-# Create your views here.
-
-def algorithm ( request, algorithm_id ):
-    try:
-        algorithm_row = Algorithm.objects.get ( pk = algorithm_id )
-    except Algorithm.DoesNotExist:
-        raise Http404 ( "Algorithm does not exist." )
-    return render ( request, "Results_browser/algorithm.html", { "algorithm": algorithm_row } )
-
+@django.contrib.auth.decorators.permission_required (
+    "Results_browser.can_view" )
 def record_view ( request, table_name, record_id ):
     sensible_name = get_sensible_name_from_url ( table_name )
     table_module = get_table_from_table_name ( sensible_name )
     record = django.shortcuts.get_object_or_404 ( table_module, pk = record_id )
-    #record_values = [ field for field in record._meta.get_fields ( ) ]
-    #record_values = django.forms.models.model_to_dict ( record )
     record_values = { }
+    record_relatives = { }
     for field in table_module._meta.fields:
-        #if field in table_module._meta.many_to_many:
-        #    continue
-        #if field in table_module._meta.
-        #if field in table_module._meta.one_to_one:
-        #    continue
-        record_values [ field.name ] = getattr ( record, field.name )
-    return django.shortcuts.render ( request, "Results_browser/record_view.html", { "record": record, "table_name": sensible_name, "record_values": record_values } )    
+        if field.name [ -3: ] == "_id":
+            try:
+                record_relatives [ field.name [ :-3 ] ] = getattr ( record, field.name ).id
+            except AttributeError:
+                record_relatives [ field.name [ :-3 ] ] = -1
+        else:
+            record_values [ field.name ] = getattr ( record, field.name )
+    return django.shortcuts.render ( request, "Results_browser/record_view.html", { "record": record, "table_name": sensible_name, "record_values": record_values, "record_relatives": record_relatives } )    
+
+def invalid_record_view ( request, table_name, record_id ):
+    sensible_name = get_sensible_name_from_url ( table_name )
+    return django.shortcuts.render ( request, "Results_browser/invalid_record_view.html", { "table": sensible_name } )
 
 def table_index ( request, table_name ):
     sensible_name = get_sensible_name_from_url ( table_name )
@@ -44,40 +42,29 @@ def table_index ( request, table_name ):
     print ( "table = {}".format ( table ) )
     return django.shortcuts.render ( request, "Results_browser/table_index.html", { "table": table, "table_name": sensible_name } )
 
-def classification ( request, classification_id ):
-    try:
-        classification_row = Classification.objects.get ( pk = classification_id )
-    except Classification.DoesNotExist:
-        raise Http404 ( "Classification does not exist." )
-    return render ( request, "Results_browser/classification.html", { "classification": classification_row } )
-
 def index ( request ):
     return django.shortcuts.render ( request, "Results_browser/index.html", { } )
 
-def result ( request, result_id ):
-    try:
-        result_row = Result.objects.get ( pk = result_id )
-    except Result.DoesNotExist:
-        raise Http404 ( "Result does not exist." )
-    return render ( request, "Results_browser/Result.html", { "Result": result_row } )
+# model forms
 
-def sample ( request, sample_id ):
-    try:
-        sample_row = Sample.objects.get ( pk = sample_id )
-    except Sample.DoesNotExist:
-        raise Http404 ( "Sample does not exist." )
-    return render ( request, "Results_browser/sample.html", { "sample": sample_row } )
+def add_record_manual_classification ( request, table_name ):
+    if request.method == "POST":
+        form = ManualClassificationForm ( request.POST )
+        if form.is_valid ( ):
+            return django.http.HttpResponseRedirect ( "/db" )
+    form = ManualClassificationForm ( )
+    sensible_name = get_sensible_name_from_url ( table_name )
+    return django.shortcuts.render ( request, "Results_browser/form_general.html", { "form": form, "table": sensible_name } )
 
-def sample_input ( request, sample_input_id ):
-    try:
-        sample_input_row = Sample_input.objects.get ( pk = sample_input_id )
-    except Sample_input.DoesNotExist:
-        raise Http404 ( "Sample_input does not exist." )
-    return render ( request, "Results_browser/Sample_input.html", { "sample_input": sample_input_row } )
-
-def sample_image_wing ( request, sample_image_wing_id ):
-    try:
-        sample_image_wing_row = Sample_image_wing.objects.get ( pk = sample_image_wing_id )
-    except Sample_image_wing.DoesNotExist:
-        raise Http404 ( "Sample wing image does not exist." )
-    return render ( request, "Results_browser/Sample_image_wing.html", { "sample_image_wing": sample_image_wing_row } )
+def add_record_sample ( request, table_name ):
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return django.http.HttpResponseRedirect ( "/login" )
+        form = SampleForm ( request.POST )
+        if form.is_valid ( ):
+            return django.http.HttpResponseRedirect ( "/db" )
+    if not request.user.is_authenticated:
+        return django.http.HttpResponseRedirect ( "/login" )
+    form = SampleForm ( )
+    sensible_name = get_sensible_name_from_url ( table_name )
+    return django.shortcuts.render ( request, "Results_browser/form_general.html", { "form": form, "table": sensible_name } )

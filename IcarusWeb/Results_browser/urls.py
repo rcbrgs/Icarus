@@ -7,10 +7,7 @@ urlpatterns = [
     url ( r"^$", views.index, name = "index" ),
     url ( r"^(?P<table_name>[\w]+)/*$", views.table_index, name = "table_index" ),
     url ( r"^(?P<table_name>[\w]+)/(?P<record_id>[0-9]+)/*$", views.record_view, name = "record_view" ),
-    url ( r"^algorithm/(?P<algorithm_id>[0-9]+)/$", views.algorithm, name = "algorithm" ),
-    url ( r"^classification/(?P<classification_id>[0-9]+)/$", views.classification, name = "classification" ),
-    url ( r"^result/(?P<result_id>[0-9]+)/$", views.result, name = "result" ),
-    url ( r"^sample/(?P<sample_id>[0-9]+)/$", views.sample, name = "sample" ),
-    url ( r"^sample_input/(?P<sample_input_id>[0-9]+)/$", views.sample_input, name = "sample_input" ),
-    url ( r"^sample_image_wing/(?P<sample_image_wing_id>[0-9]+)/$", views.sample_image_wing, name = "sample_image_wing" ),
+    url ( r"^(?P<table_name>[\w]+)/(?P<record_id>-[0-9]+)/*$", views.invalid_record_view, name = "invalid_record_view" ),
+    url ( r"^(?P<table_name>manual_classification)/add/*$", views.add_record_manual_classification, name = "add_record_manual_classification" ),
+    url ( r"^(?P<table_name>sample)/add/*$", views.add_record_sample, name = "add_record_sample" ),
     ]

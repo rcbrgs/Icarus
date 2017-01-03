@@ -14,8 +14,8 @@ from .models import ( ACL,
                       Landmarks,
                       Location,
                       Manual_classification,
-                      MosquitoLab,
-                      Photophysiognomy,
+                      Mosquitolab,
+                      Phytophysiognomy,
                       Political_location,
                       Procrustes,
                       Publication,
@@ -48,8 +48,8 @@ admin.site.register ( Institution )
 admin.site.register ( Landmarks )
 admin.site.register ( Location )
 admin.site.register ( Manual_classification )
-admin.site.register ( MosquitoLab )
-admin.site.register ( Photophysiognomy )
+admin.site.register ( Mosquitolab )
+admin.site.register ( Phytophysiognomy )
 admin.site.register ( Political_location )
 admin.site.register ( Procrustes )
 admin.site.register ( Publication )
